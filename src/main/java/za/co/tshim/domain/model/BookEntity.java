@@ -36,7 +36,7 @@ public class BookEntity implements Serializable {
   //  @Cascade(value=org.hibernate.annotations.CascadeType.SAVE_UPDATE)
     private BookLanguage written_lang = new BookLanguage(); 
     
-    @OneToMany(cascade = CascadeType.ALL,mappedBy="book",fetch =FetchType.EAGER ,)
+    @OneToMany(cascade = CascadeType.ALL,mappedBy="book",fetch =FetchType.EAGER )
     private  List<Author> authors = new ArrayList<Author>(); 
     
     @ManyToOne(cascade = CascadeType.ALL)
