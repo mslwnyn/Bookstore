@@ -1,0 +1,142 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                template="template/ui.xhtml"
+                xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"> 
+
+  <ui:define name="body">
+    <h:form id="form" enctype="multipart/form-data">
+      <h:messages id="messages" showDetail="true" />
+      <p:panel header="Book Store Application">
+        <p:growl id="msgs" showDetail="true"/>
+        
+        <p:dataTable id="booksTable" var="book" value="#{bookController.bookList}" selection="#{bookController.selectedBook}" rowKey="#{book.id}" editable="true" widgetVar="cellBooks" style="margin-bottom:20px"
+                                                  rows="10"  paginator="true"  paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink}
+                                                  {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}" rowsPerPageTemplate="5,10,15" > 
+      
+          <f:facet name="header">
+            Book Details
+                  <p:commandButton id="toggler" type="button" value="Columns" style="float:right" icon="ui-icon-calculator" />
+                  <p:columnToggler datasource="booksTable" trigger="toggler" />
+          </f:facet>
+          <p:column selectionMode="single" style="width:16px;text-align:center"/>
+          <p:ajax event="rowEdit" listener="#{bookController.onRowEdit}" update=":form:msgs" />
+          <p:ajax event="rowEditCancel" listener="#{bookController.onRowCancel}" update=":form:msgs" />
+          <p:ajax event="cellEdit" listener="#{bookController.onCellEdit}" update=":form:msgs" />
+     
+          <p:column headerText="Title" style="width:200px">
+            <p:cellEditor>
+              <f:facet name="output"><h:outputText value="#{book.title}" /></f:facet>
+              <f:facet name="input"><p:inputText value="#{book.title}" style="width:100%" label="Title"/></f:facet>
+            </p:cellEditor>
+          </p:column>
+          
+
+          <p:column headerText="Language" style="width:100px" >
+              <p:cellEditor>
+                  <f:facet name="output"><h:outputText value="#{book.written_lang.languageName}" /></f:facet>
+                  <f:facet name="input">
+                      <h:selectOneMenu value="#{book.written_lang.langCode}" style="width:100%">
+                          <f:selectItems value="#{bookController.langauageSelectItems}"  var="language" itemLabel="#{language.label}" itemValue="#{language.value}" />
+                      </h:selectOneMenu>
+                  </f:facet>
+              </p:cellEditor>
+          </p:column>
+          
+          
+          
+           <p:column headerText="Category" style="width:200px" >
+              <p:cellEditor>
+                  <f:facet name="output"><h:outputText value="#{book.category.categoryName}" /></f:facet>
+                  <f:facet name="input">
+                      <h:selectOneMenu value="#{book.category.id}" style="width:100%">
+                          <f:selectItems value="#{bookController.categoriesSelectItems}"  var="category" itemLabel="#{category.label}" itemValue="#{category.value}" />
+                      </h:selectOneMenu>
+                  </f:facet>
+              </p:cellEditor>
+          </p:column>
+           <p:column headerText="Year"   style="width:82px">
+              <p:cellEditor>
+                  <f:facet name="output"><h:outputText value="#{book.year}" /></f:facet>
+              <f:facet name="input">
+                  <p:inputText value="#{book.year}" style="width:100%" label="Price"/>
+              </f:facet>
+            </p:cellEditor>
+          </p:column>
+
+          <p:column headerText="Price"   style="width:82px">
+              <p:cellEditor>
+              <f:facet name="output"><h:outputText value="#{book.price}" /></f:facet>
+              <f:facet name="input">
+                <p:inputText value="#{book.price}" style="width:100%" label="Price"/>
+              </f:facet>
+            </p:cellEditor>
+          </p:column>
+          
+          
+          
+
+          <p:column style="width:42px" headerText="Edit">
+              <p:rowEditor />&nbsp;<h:commandLink action="#{bookController.delete(book)}" value=" x " />
+          </p:column>
+       
+          <f:facet name="footer">
+              <p:fileUpload fileUploadListener="#{bookController.handleFileUpload}" mode="advanced" dragDropSupport="false"
+                            update="messages" sizeLimit="100000" fileLimit="1" allowTypes="/(\.|\/)(gif|jpe?g|png)$/"  />
+
+              <p:growl id="messages" showDetail="true" />
+            <p:commandButton process="booksTable" update=":form:bookDetail" icon="ui-icon-search" value="View" oncomplete="PF('bookDialog').show()" />
+         </f:facet>
+       
+        </p:dataTable>
+        <p:contextMenu for="booksTable" widgetVar="cMenu">   
+            <p:menuitem value="Edit Cell" icon="ui-icon-search" onclick="PF('cellBooks').showCellEditor();return false;"/>  
+            <p:menuitem value="Hide Menu" icon="ui-icon-close" onclick="PF('cMenu').hide()"/>  
+        </p:contextMenu> 
+
+        <h:commandButton action="#{mainController.home}" value="Upload More" />
+        
+        <p:dialog header="Book Info" widgetVar="bookDialog" modal="true" showEffect="fade" hideEffect="fade" resizable="false">
+        <p:outputPanel id="bookDetail" style="text-align:center;">
+            <p:panelGrid  columns="2" rendered="#{not empty bookController.selectedBook}" columnClasses="label,value" >
+                <f:facet name="header">
+                         <p:graphicImage value="#{bookController.bookImage}">
+                                <f:param name="bookId" value="#{bookController.selectedBook.id}" />
+			</p:graphicImage>
+                </f:facet>
+ 
+                <h:outputText value="Category:" />
+                <h:outputText value="#{bookController.selectedBook.category.categoryName}" />
+
+ 
+                <h:outputText value="Book Title:" />
+                <h:outputText value="#{bookController.selectedBook.title}" />
+                
+                
+                <h:outputText value="Year" />
+                <h:outputText value="#{bookController.selectedBook.year}" />
+ 
+                <h:outputText value="Language Code" />
+                <h:outputText value="#{bookController.selectedBook.written_lang.languageName}" style="color:red"/>
+ 
+                <h:outputText value="Price" />
+                <h:outputText value="R#{bookController.selectedBook.price}" />
+                
+                <c:forEach items="#{bookController.selectedBook.authors}" var="authors">
+                            <h:outputText value="Author" />
+                            <h:outputText value="#{authors.authorName}" />    
+                </c:forEach>
+            </p:panelGrid>
+            
+        </p:outputPanel>
+    </p:dialog>
+ 
+
+      </p:panel>
+    </h:form>
+  </ui:define>
+</ui:composition>

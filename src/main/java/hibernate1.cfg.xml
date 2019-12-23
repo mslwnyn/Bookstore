@@ -1,0 +1,54 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE hibernate-configuration PUBLIC
+        "-//Hibernate/Hibernate Configuration DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-configuration-3.0.dtd">
+
+<hibernate-configuration>
+
+    <session-factory>
+        
+      <!--property name="javax.persistence.jdbc.driver" value="com.mysql.jdbc.Driver"/-->
+      <!--property name="javax.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/world?zeroDateTimeBehavior=convertToNull"/-->
+      <!--property name="javax.persistence.jdbc.user" value="root"/-->
+      <!--property name="javax.persistence.jdbc.password" value="Mypass0*"/-->
+      <!-- Database connection settings -->
+        <property name="connection.driver_class">com.mysql.jdbc.Driver</property>
+        <property name="connection.url">jdbc:mysql://localhost:3306/mysql?zeroDateTimeBehavior=convertToNull</property>
+        <property name="connection.username">root</property>
+        <property name="connection.password">Mypass0*</property>
+     
+     
+      <!--property name="hibernate.cache.provider_class" value="org.hibernate.cache.NoCacheProvider"/ -->
+
+        <!-- Database connection settings -->
+        <!--property name="connection.driver_class">org.postgresql.Driver</property-->
+        <!--property name="connection.url">jdbc:postgresql://localhost:5432/postgres</property-->
+        <!--property name="connection.username">postgres</property-->
+        <!--property name="connection.password">postgres</property-->
+        <!--property name="dialect">org.hibernate.dialect.PostgreSQLDialect</property-->
+
+        <!-- JDBC connection pool (use the built-in) -->
+        <property name="connection.pool_size">1</property>
+
+        <!-- SQL dialect -->
+        <!--property name="dialect">org.hibernate.dialect.PostgreSQLDialect</property-->
+
+        <!-- Disable the second-level cache  -->
+        <property name="cache.provider_class">org.hibernate.cache.NoCacheProvider</property>
+
+        <!-- Echo all executed SQL to stdout -->
+        <property name="show_sql">true</property>
+
+        <!-- Drop and re-create the database schema on startup -->
+        <property name="hbm2ddl.auto">update</property>
+
+        <!-- Names the annotated entity class -->
+        <mapping class="za.co.tshim.model.BookEntity"/>
+        <mapping class="za.co.tshim.model.Author"/>
+        <mapping class="za.co.tshim.model.BookImage"/>
+        <mapping class="za.co.tshim.model.Category"/>
+
+
+    </session-factory>
+
+</hibernate-configuration>
